@@ -1,0 +1,5 @@
+<p>google-maps-demo works!</p>
+<ng-container *ngIf="googleMapsLoader.apiLoaded| async">
+    <google-map [center]="center"></google-map>
+</ng-container>
+<input #autocomplete/>
