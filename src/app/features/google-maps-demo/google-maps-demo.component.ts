@@ -24,7 +24,7 @@ export class GoogleMapsDemoComponent implements OnInit {
     this.setAutocompleteRef();
   }
 
-  private setCenter(): Promise<string> {
+  private async setCenter(): Promise<string> {
     if (this.googleMapsLoader.apiLoaded == undefined) { return Promise.reject("apiLoaded is undefined") }
 
     const isLoaded = firstValueFrom(this.googleMapsLoader.apiLoaded)
@@ -33,15 +33,21 @@ export class GoogleMapsDemoComponent implements OnInit {
       if (!isLoaded) { return Promise.reject("apiLoaded is false."); }
 
       // set <google-maps [center]> to current position
-      navigator.geolocation.getCurrentPosition((position) => {
-        this.center = { lat: position.coords.latitude, lng: position.coords.longitude }
-      })
-
-      return Promise.resolve("");
+      return new Promise<string>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            this.center = { lat: position.coords.latitude, lng: position.coords.longitude }
+            resolve("");
+          },
+          (error) => {
+            reject(error)
+          }
+        )
+      });
     })
   }
 
-  private setAutocompleteRef(): Promise<string> {
+  private async setAutocompleteRef(): Promise<string> {
     if (this.googleMapsLoader.apiLoaded == undefined) { return Promise.reject("apiLoaded is undefined") }
 
     const isLoaded = firstValueFrom(this.googleMapsLoader.apiLoaded);
