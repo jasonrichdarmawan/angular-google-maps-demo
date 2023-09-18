@@ -11,8 +11,7 @@ import { GoogleMapsDemoModule } from './features/google-maps-demo/google-maps-de
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
-    GoogleMapsDemoModule
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

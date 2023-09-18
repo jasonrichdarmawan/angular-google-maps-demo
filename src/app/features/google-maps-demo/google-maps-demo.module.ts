@@ -4,6 +4,7 @@ import { GoogleMapsDemoComponent } from './google-maps-demo.component';
 import { GoogleMapsModule } from '@angular/google-maps'
 import { HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
 import { LoadGoogleMapsAPIService } from 'src/app/core/services/google-maps/load-google-maps-api.service';
+import { GoogleMapsDemoRoutingModule } from './google-maps-demo-routing.module';
 
 
 
@@ -13,6 +14,7 @@ import { LoadGoogleMapsAPIService } from 'src/app/core/services/google-maps/load
   ],
   imports: [
     CommonModule,
+    GoogleMapsDemoRoutingModule,
     GoogleMapsModule,
     HttpClientModule,
     HttpClientJsonpModule
@@ -20,8 +22,5 @@ import { LoadGoogleMapsAPIService } from 'src/app/core/services/google-maps/load
   providers: [
     LoadGoogleMapsAPIService
   ],
-  exports: [
-    GoogleMapsDemoComponent,
-  ]
 })
 export class GoogleMapsDemoModule { }

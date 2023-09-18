@@ -14,33 +14,53 @@ export class GoogleMapsDemoComponent implements OnInit {
   center: google.maps.LatLngLiteral = {lat: 1.290270, lng: 103.851959}
 
   constructor(public googleMapsLoader: LoadGoogleMapsAPIService) {
-    if (this.googleMapsLoader.apiLoaded) {
-      const isLoaded = firstValueFrom(this.googleMapsLoader.apiLoaded);
-
-      isLoaded.then((isLoaded) => {
-        if (!isLoaded) { return }
-
-        // set <google-maps [center]> to current position
-        navigator.geolocation.getCurrentPosition((position) => {
-          this.center = { lat: position.coords.latitude, lng: position.coords.longitude }
-        })
-
-        // set center when user select a place in <input #autocomplete />
-        // TODO: permitting direct access to the DOM can make your application more vulnerable to XSS attacks.
-        // reference: https://angular.io/api/core/ElementRef
-        const autocomplete = new google.maps.places.Autocomplete(this.autocompleteRef.nativeElement, {})
-        autocomplete.addListener("place_changed", () => {
-          const place = autocomplete.getPlace();
-          if (place.geometry?.location) {
-            this.center = place.geometry.location.toJSON();
-          }
-        })
-
-      })
-    }
   }
 
   ngOnInit(): void {
   }
 
+  ngAfterViewInit(): void {
+    this.setCenter();
+    this.setAutocompleteRef();
+  }
+
+  private setCenter(): Promise<string> {
+    if (this.googleMapsLoader.apiLoaded == undefined) { return Promise.reject("apiLoaded is undefined") }
+
+    const isLoaded = firstValueFrom(this.googleMapsLoader.apiLoaded)
+
+    return isLoaded.then((isLoaded) => {
+      if (!isLoaded) { return Promise.reject("apiLoaded is false."); }
+
+      // set <google-maps [center]> to current position
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.center = { lat: position.coords.latitude, lng: position.coords.longitude }
+      })
+
+      return Promise.resolve("");
+    })
+  }
+
+  private setAutocompleteRef(): Promise<string> {
+    if (this.googleMapsLoader.apiLoaded == undefined) { return Promise.reject("apiLoaded is undefined") }
+
+    const isLoaded = firstValueFrom(this.googleMapsLoader.apiLoaded);
+
+    return isLoaded.then((isLoaded) => {
+      if (!isLoaded) { return Promise.reject("apiLoaded is false") }
+
+      // set center when user select a place in <input #autocomplete />
+      // TODO: permitting direct access to the DOM can make your application more vulnerable to XSS attacks.
+      // reference: https://angular.io/api/core/ElementRef
+      const autocomplete = new google.maps.places.Autocomplete(this.autocompleteRef.nativeElement, {})
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        if (place.geometry?.location) {
+          this.center = place.geometry.location.toJSON();
+        }
+      })
+
+      return Promise.resolve("");
+    })
+  }
 }
